@@ -1,0 +1,52 @@
+{
+  "name": "p-flux",
+  "version": "1.0.0",
+  "description": "Simple Flux implementation extracted from Pivotal Apps",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pivotal-cf/p-flux.git"
+  },
+  "keywords": [
+    "flux",
+    "react"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pivotal-cf/p-flux/issues"
+  },
+  "homepage": "https://github.com/pivotal-cf/p-flux#readme",
+  "devDependencies": {
+    "babel": "^6.1.18",
+    "babel-core": "^6.1.21",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-transform-object-assign": "^6.1.18",
+    "babel-plugin-transform-react-display-name": "^6.1.18",
+    "babel-polyfill": "^6.1.19",
+    "babel-preset-es2015-loose": "6.1.2",
+    "babel-preset-react": "^6.1.18",
+    "babel-preset-stage-0": "^6.1.2",
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-jasmine": "^2.3.0",
+    "gulp-jasmine-browser": "^1.0.1",
+    "gulp-load-plugins": "^1.0.0",
+    "gulp-plumber": "^1.0.1",
+    "jasmine_dom_matchers": "^1.4.0",
+    "jquery": "^2.2.1",
+    "pui-react-tools": "^0.4.3",
+    "react": "^0.14.7",
+    "require-dir": "^0.3.0",
+    "run-sequence": "^1.1.5",
+    "webpack-stream": "^3.1.0"
+  },
+  "dependencies": {
+    "fbjs": "^0.7.2",
+    "pui-cursor": "^2.0.5"
+  }
+}
