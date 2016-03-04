@@ -9,7 +9,7 @@ This provides an easy way to keep data in sync while also retaining the speed ad
 
 ### useStore
 
-The version of flux implemented with `p-flux` fundamentally uses a `store`, `Actions` and a `Dispatcher`. 
+The version of flux implemented with `p-flux` fundamentally uses a `store`, `Actions` and a `Dispatcher`.
 
 The `store` is all of the data in your application. It should be injected into your entry point using the `useStore` method:
 
@@ -25,7 +25,7 @@ class Application extends React.Component {
   constructor(props, context) {
     super(props, context);
   }
-  
+
   render() {
     return (
       <OtherComponent {...this.props.store}/>
@@ -34,7 +34,7 @@ class Application extends React.Component {
 }
 
 const ApplicationWithStore = useStore(Application, options = {});
-  
+
 module.exports = ApplicationWithStore;
 ```
 
@@ -49,19 +49,20 @@ The `options` to `useStore` are:
 
 ### Dispatcher
 
-The dispatcher owns the store and is the only one who should be allowed to change it. The dispatcher has a `dispatch` method for firing events
+The dispatcher owns the store and is the only one who should be allowed to change it. The dispatcher has a `dispatch` method for firing events:
 
 ```
 var Dispatcher = require('p-flux').Dispatcher
 Dispatcher.dispatch({type: 'addName', data: 'Bob'});
 ```
 
-The `dispatch` method is intended to be called from Actions or dispatcherHandlers, 
+The `dispatch` method should be called from Actions or dispatcherHandlers,
 but **not directly from React Components**.
-When `dispatch` is called with an event, the Dispatcher calls the `onDispatch` 
-callback with the event. The event is then delegated to the appropriate 
+
+When `dispatch` is called with an event, the Dispatcher calls the `onDispatch`
+callback with the event. The event is then delegated to the appropriate
 `dispatchHandler` (which should be included as an option on `useStore`).
- 
+
 The Dispatcher has a `$store` key, which is an instance of
 [PUI Cursor](https://github.com/pivotal-cf/pui-cursor).
 An example dispatcherHandler might look like:
@@ -71,7 +72,7 @@ var dispatcherHandlerExample = {
   addName({data}) {
     this.$store.refine('names').push(data);
   },
-  
+
   resetNames() {
     this.$store.merge({names: []});
   }
@@ -88,11 +89,13 @@ for more information on the PUI Cursor API.
 
 ### Actions
 
-`Actions` are globally available functions that present the only interface React Components should use to update data.
-React Components should use `Actions` to create `Dispatcher` events; they should never call the dispatcher directly.
-Actions are generally a way of specifying user intention without necessarily knowing the implementation. 
+`Actions` are globally available functions that present the only interface React components should use to update data.
+React components should use `Actions` to create `Dispatcher` events; they should never call the dispatcher directly.
+
+Actions specify user intention without necessarily knowing the implementation.
 A typical action will take a small amount of data, massage it, and then dispatch an appropriate event.
-**Actions should only have one responsibility and be completely atomic**.
+
+**Actions should be completely atomic, having only have one responsibility**.
 
 An example component using an Action is below:
 
@@ -102,21 +105,21 @@ var React = require('react')
 
 class MyComponent extends React.Component {
   static propTypes = {
-    names: React.PropsTypes.array.isRequired
+    persons: React.PropsTypes.array.isRequired
   };
-  
+
   addAlice() {
-    Actions.addName('Alice'); // default action
+    Actions.addPerson('Alice'); // default action
   }
-  
+
   addLoudAlice() {
-    Actions.addLoudName('Alice') // custom action
+    Actions.addLoudPerson('Alice') // custom action
   }
 
   render() {
     return (
         <div>
-          {this.props.names.slice(-1)[0]}
+          {this.props.persons.slice(-1)[0]}
           <button onClick={this.addAlice}>Click Me to Add Alice</button>
           <button onClick={this.addLoudAlice}>Click Me to Add Alice in all caps</button>
         </div>
@@ -125,47 +128,44 @@ class MyComponent extends React.Component {
 }
 ```
 
-A common use case for actions is to pass data to the dispatcher with no need for massaging. 
-To reduce boilerplate, `p-flux` automatically adds an action for each dispatcher event that is handled. 
-This means that in the example above, the `addName` action is automatically 
-created for you. 
-`Actions.addName('Alice')` is an example of using a default action and is 
-equivalent to `Dispatcher.dispatch({type: 'addName', data: 'Alice'})`.
+A common use case for actions is to pass data to the dispatcher with no need for massaging.
+To reduce boilerplate, `p-flux` automatically adds an action for each dispatcher event that is handled.
+This means that in the example above, the `addPerson` action is automatically
+created for you.
+`Actions.addPerson('Alice')` is an example of using a default action and is
+equivalent to `Dispatcher.dispatch({type: 'addPerson', data: 'Alice'})`.
 
-If you would like to have more semantic actions, than the dispatcher default actions,
-you can provide custom actions. 
+If you would like to have more semantic actions than the default dispatcher actions,
+provide custom actions.
+
 Note that a custom action with the same name as a default action will replace the default action.
-The `addLoudName` action used above is an example.
- 
-Example custom actions with `addLoudName` are below:
+The `addLoudPerson` action used above is an example.
+
+Example custom actions with `addLoudPerson` are below:
 
 ```js
 var Dispatcher = require('p-flux').Dispatcher;
 
-var customNameActions = {
-  addLoudName(name) {
-    Dispatcher.dispatch({type: 'addName', data: name.toUpperCase()});
-  },
-  
-  addQuietName(name) {
-    Dispatcher.dispatch({type: 'addName', data: name.toLowerCase()});  
+var customPersonActions = {
+  addLoudPerson(person) {
+    Dispatcher.dispatch({type: 'addPerson', data: person.toUpperCase()});
   }
 }
 ```
 ## Recommended Practices
 
-See [React Starter](https://github.com/pivotal-cf/react-starter) for a basic use case.
+See [React Starter](https://github.com/pivotal-cf/react-starter) for a basic use case of p-flux.
 
 ### Composite Events
 
-Generally, we encourage actions to only be responsible for one dispatcher event. 
-This makes sure that all events go through
-the `onDispatch` callback. This makes debugging much easier, especially finding race conditions. 
+Generally, actions should only be responsible for one dispatcher event.
+This ensures that all events go through
+the `onDispatch` callback. This makes debugging much easier, especially for finding race conditions.
 However, it is common to want an action to trigger multiple events. To do this, we recommend
 dispatching events from dispatcherHandlers.
 
-An example of a composite event is below. It will fetch a list of users and then add that list
-to the store.
+In the following example, a composite event fetches a list of users and then adds that list
+to the store:
 
 ```js
 var usersDispatcherHandler = {
@@ -174,7 +174,7 @@ var usersDispatcherHandler = {
       Dispatcher.dispatch({type: 'setUsers', data: users});
     });
   },
-  
+
   setUsers({data}) {
     this.$store.merge({users: data});
   }
@@ -186,14 +186,17 @@ Note that the `fetchUsers` event calls `Dispatcher.dispatch` directly to fire th
 ### The Store
 
 `useStore` injects a `store` prop into the entry point of your application.
-Note that `store` is just a javascript object and is not strictly immutable.
-While it is possible, **do not update the store manually**. Doing this will cause data to be out of sync. 
-Always use the `$store` variable and the Cursor API to update the data.
+Note that `store` is just a JavaScript object and is not strictly immutable.
+While it is possible, **do not update the store manually**. Doing this will cause data to be out of sync.
+
+Always use the `$store` variable and the [PUI Cursor](https://github.com/pivotal-cf/pui-cursor)
+API to update the data.
 
 ### Data Outside the Store
 
-**Do not store any data you want to share between components on state.** 
-This can cause data synchronization issues. Using state should be rare. 
-We recommend using state only for truly private data in a component.
-Examples are booleans for whether a dropdown is open or a checkbox is checked. 
-Even these are sometimes not private.
+**Do not store any data you want to share between components on state.**
+This can cause data synchronization issues.
+
+Using state should be rare. We recommend that you only use state for truly private data in a component.
+Examples are booleans for whether a dropdown is open or a checkbox is checked,
+although sometimes even these values are not private.
