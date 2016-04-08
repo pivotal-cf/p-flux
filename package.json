@@ -1,6 +1,6 @@
 {
   "name": "p-flux",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple Flux implementation extracted from Pivotal Apps",
   "main": "index.js",
   "scripts": {
