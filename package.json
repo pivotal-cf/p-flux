@@ -39,6 +39,7 @@
     "gulp-plumber": "^1.0.1",
     "jasmine_dom_matchers": "^1.4.0",
     "jquery": "^2.2.1",
+    "phantomjs": "^2.1.7",
     "pui-react-tools": "^0.4.3",
     "react": "^0.14.7",
     "require-dir": "^0.3.0",
@@ -47,6 +48,6 @@
   },
   "dependencies": {
     "fbjs": "^0.7.2",
-    "pui-cursor": "^2.0.5"
+    "pui-cursor": "^3.0.2"
   }
 }
