@@ -1,7 +1,7 @@
 require('./spec_helper');
 
 describe('#useStore', () => {
-  let Dispatcher, Actions, onDispatchSpy, overrideMeSpy, ApplicationWithStore;
+  let Dispatcher, Actions, onDispatchSpy, overrideMeSpy, ApplicationWithStore, subject;
   beforeEach(() => {
     const useStore = require('../src/use_store');
     const Application = ({store, foo}) => {
@@ -46,7 +46,7 @@ describe('#useStore', () => {
       dispatcherHandlers,
       onDispatch: onDispatchSpy
     });
-    ReactDOM.render(<ApplicationWithStore foo="bar"/>, root);
+    subject = ReactDOM.render(<ApplicationWithStore foo="bar"/>, root);
   });
 
   it('renders the component it is given', () => {
@@ -67,6 +67,18 @@ describe('#useStore', () => {
     Actions.pop = '1234';
     ApplicationWithStore.reset();
     expect(Actions.pop).not.toBe('1234');
+  });
+
+  describe('when the component is unmounted', () => {
+    beforeEach(() => {
+      ReactDOM.unmountComponentAtNode(root);
+      spyOn(subject, 'setState').and.callThrough();
+      Actions.pop();
+    });
+
+    it('does not call set state after the component is unmounted', () => {
+      expect(subject.setState).not.toHaveBeenCalled();
+    });
   });
 
   describe('Dispatcher', () => {
