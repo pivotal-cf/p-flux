@@ -1,4 +1,4 @@
-const warn = require('fbjs/lib/warning');
+const warn = require('warning');
 
 const noop = () => {};
 

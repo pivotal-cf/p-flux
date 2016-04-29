@@ -47,7 +47,8 @@
     "webpack-stream": "^3.1.0"
   },
   "dependencies": {
-    "fbjs": "^0.7.2",
-    "pui-cursor": "^3.0.2"
+    "pui-cursor": "^3.0.4",
+    "pui-react-mixins": "^5.0.1",
+    "warning": "^2.1.0"
   }
 }
