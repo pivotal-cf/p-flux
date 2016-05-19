@@ -1,7 +1,7 @@
 require('./spec_helper');
 
 describe('#useStore', () => {
-  let Dispatcher, Actions, onDispatchSpy, overrideMeSpy, ApplicationWithStore;
+  let Dispatcher, Actions, onDispatchSpy, overrideMeSpy, optionsSpy, ApplicationWithStore;
   beforeEach(() => {
     const useStore = require('../src/use_store');
     const Application = ({store, foo}) => {
@@ -17,6 +17,7 @@ describe('#useStore', () => {
 
     onDispatchSpy = jasmine.createSpy('onDispatch');
     overrideMeSpy = jasmine.createSpy('overrideMe');
+    optionsSpy = jasmine.createSpy('options');
 
     const actions = [{
       pop() {
@@ -37,6 +38,10 @@ describe('#useStore', () => {
 
       overrideMe() {
         throw new Error('I should not be called');
+      },
+
+      optionalArgs({data, arg2, arg3}) {
+        optionsSpy(data, arg2, arg3);
       }
     }];
 
@@ -99,6 +104,14 @@ describe('#useStore', () => {
     it('correctly overrides automatic actions with user-specified actions', () => {
       Actions.overrideMe();
       expect(overrideMeSpy).toHaveBeenCalled();
+    });
+
+    it('takes optional arguments', () => {
+      const arg1 = 1;
+      const arg2 = 2;
+      const arg3 = 3;
+      Actions.optionalArgs(arg1, {arg2, arg3});
+      expect(optionsSpy).toHaveBeenCalledWith(arg1, arg2, arg3);
     });
   });
 });

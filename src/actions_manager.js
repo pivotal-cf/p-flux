@@ -7,7 +7,7 @@ module.exports = {
     //Create default actions for each dispatch event
     dispatcherHandlers.forEach(dispatcherHandler => {
       Object.keys(dispatcherHandler).forEach(dispatchMethod => {
-        Actions[dispatchMethod] = (data) => Dispatcher.dispatch({type: dispatchMethod, data});
+        Actions[dispatchMethod] = (data, options = {}) => Dispatcher.dispatch({type: dispatchMethod, data, ...options});
       });
     });
 
