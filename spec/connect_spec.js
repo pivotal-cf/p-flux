@@ -1,9 +1,9 @@
-require('./spec_helper');
+import './spec_helper';
+import subject from '../src/connect';
 
-describe('#useStore', () => {
+describe('#connect', () => {
   let Dispatcher, Actions, onDispatchSpy, overrideMeSpy, optionsSpy, ApplicationWithStore;
   beforeEach(() => {
-    const useStore = require('../src/use_store');
     const Application = ({store, foo}) => {
       return (
         <div className="application">
@@ -47,12 +47,12 @@ describe('#useStore', () => {
       }
     }];
 
-    ApplicationWithStore = useStore(Application, {
+    ApplicationWithStore = subject({
       store: {letters: ['a', 'b']},
       actions,
       dispatcherHandlers,
       onDispatch: onDispatchSpy
-    });
+    })(Application);
     ReactDOM.render(<ApplicationWithStore foo="bar"/>, root);
   });
 
